@@ -55,12 +55,23 @@
         if ($.fn.DataTable) {
             // Si DataTables est chargé, initialiser toutes les tables
             try {
+                // Détruire les instances existantes de DataTable pour éviter l'erreur de réinitialisation
+                if ($.fn.dataTable.isDataTable('#patients-table')) {
+                    $('#patients-table').DataTable().destroy();
+                }
+                
+                if ($.fn.dataTable.isDataTable('#consultations-table')) {
+                    $('#consultations-table').DataTable().destroy();
+                }
+                
+                // Initialiser les tableaux
                 if ($('#patients-table').length) {
                     $('#patients-table').DataTable({
                         language: {
                             url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/French.json'
                         },
-                        responsive: true
+                        responsive: true,
+                        destroy: true // Permet la réinitialisation
                     });
                     console.log('DataTable patients initialisé');
                 }
@@ -70,7 +81,8 @@
                         language: {
                             url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/French.json'
                         },
-                        responsive: true
+                        responsive: true,
+                        destroy: true // Permet la réinitialisation
                     });
                     console.log('DataTable consultations initialisé');
                 }
