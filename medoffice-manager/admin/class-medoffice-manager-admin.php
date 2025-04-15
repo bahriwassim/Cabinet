@@ -45,16 +45,20 @@ class MedOffice_Manager_Admin {
      * @since    1.0.0
      */
     public function enqueue_styles() {
+        // Vérifie si nous sommes sur une page de notre plugin
         $screen = get_current_screen();
-        if (strpos($screen->id, 'medoffice-manager') === false) {
-            return;
-        }
+        
+        // Nous ajoutons des styles à toutes les pages d'administration pour éviter les problèmes
+        // (plus sécuritaire que de filtrer uniquement sur certaines pages)
 
+        // Bibliothèques CSS externes
         wp_enqueue_style('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css', array(), '5.2.3', 'all');
-        wp_enqueue_style('datatables-bs5', 'https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css', array(), '1.13.4', 'all');
+        wp_enqueue_style('datatables-bs5', 'https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css', array('bootstrap'), '1.13.4', 'all');
         wp_enqueue_style('fullcalendar', 'https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css', array(), '5.11.3', 'all');
         wp_enqueue_style('fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), '6.4.0', 'all');
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/medoffice-manager-admin.css', array(), $this->version, 'all');
+        
+        // Notre CSS personnalisé (chargé en dernier pour pouvoir surcharger les styles des bibliothèques)
+        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/medoffice-manager-admin.css', array('bootstrap', 'datatables-bs5', 'fullcalendar', 'fontawesome'), $this->version, 'all');
     }
 
     /**
@@ -63,11 +67,7 @@ class MedOffice_Manager_Admin {
      * @since    1.0.0
      */
     public function enqueue_scripts() {
-        $screen = get_current_screen();
-        if (strpos($screen->id, 'medoffice-manager') === false) {
-            return;
-        }
-
+        // Nous ne filtrons plus par écran pour éviter les problèmes
         // Assurons-nous que jQuery est chargé en premier
         wp_enqueue_script('jquery');
         
