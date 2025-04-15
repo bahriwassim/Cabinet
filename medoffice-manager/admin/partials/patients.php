@@ -15,7 +15,7 @@
         <i class="fas fa-users"></i> <?php _e('Gestion des patients', 'medoffice-manager'); ?>
     </h1>
     
-    <a href="#" class="page-title-action" id="add-new-patient">
+    <a href="#" class="page-title-action btn btn-primary btn-sm" id="add-new-patient">
         <i class="fas fa-plus"></i> <?php _e('Ajouter un patient', 'medoffice-manager'); ?>
     </a>
     

@@ -15,7 +15,7 @@
         <i class="fas fa-stethoscope"></i> <?php _e('Gestion des consultations', 'medoffice-manager'); ?>
     </h1>
     
-    <a href="#" class="page-title-action" id="add-new-consultation">
+    <a href="#" class="page-title-action btn btn-primary btn-sm" id="add-new-consultation">
         <i class="fas fa-plus"></i> <?php _e('Nouvelle consultation', 'medoffice-manager'); ?>
     </a>
     

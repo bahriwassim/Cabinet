@@ -15,7 +15,7 @@
         <i class="fas fa-calendar-alt"></i> <?php _e('Calendrier des rendez-vous', 'medoffice-manager'); ?>
     </h1>
     
-    <a href="#" class="page-title-action" id="add-new-appointment">
+    <a href="#" class="page-title-action btn btn-primary btn-sm" id="add-new-appointment">
         <i class="fas fa-plus"></i> <?php _e('Nouveau rendez-vous', 'medoffice-manager'); ?>
     </a>
     

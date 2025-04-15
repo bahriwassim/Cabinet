@@ -79,12 +79,15 @@ class MedOffice_Manager_Admin {
         wp_enqueue_script('fullcalendar', 'https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js', array('jquery'), '5.11.3', true);
         wp_enqueue_script('jspdf', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', array('jquery'), '2.5.1', true);
         
+        // Script d'initialisation Bootstrap (doit être chargé avant nos scripts personnalisés)
+        wp_enqueue_script('bootstrap-init', plugin_dir_url(__FILE__) . 'js/bootstrap-init.js', array('jquery', 'bootstrap-bundle'), $this->version, true);
+        
         // Scripts du plugin (chargés dans le footer pour s'assurer que les dépendances sont disponibles)
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/medoffice-manager-admin.js', array('jquery', 'bootstrap-bundle'), $this->version, true);
-        wp_enqueue_script('medoffice-patients', plugin_dir_url(__FILE__) . 'js/patients.js', array('jquery', 'bootstrap-bundle', 'datatables', 'datatables-bs5'), $this->version, true);
-        wp_enqueue_script('medoffice-consultations', plugin_dir_url(__FILE__) . 'js/consultations.js', array('jquery', 'bootstrap-bundle', 'datatables', 'datatables-bs5'), $this->version, true);
-        wp_enqueue_script('medoffice-calendar', plugin_dir_url(__FILE__) . 'js/calendar.js', array('jquery', 'bootstrap-bundle', 'fullcalendar'), $this->version, true);
-        wp_enqueue_script('medoffice-prescription', plugin_dir_url(__FILE__) . 'js/prescription.js', array('jquery', 'bootstrap-bundle', 'jspdf'), $this->version, true);
+        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/medoffice-manager-admin.js', array('jquery', 'bootstrap-bundle', 'bootstrap-init'), $this->version, true);
+        wp_enqueue_script('medoffice-patients', plugin_dir_url(__FILE__) . 'js/patients.js', array('jquery', 'bootstrap-bundle', 'datatables', 'datatables-bs5', 'bootstrap-init'), $this->version, true);
+        wp_enqueue_script('medoffice-consultations', plugin_dir_url(__FILE__) . 'js/consultations.js', array('jquery', 'bootstrap-bundle', 'datatables', 'datatables-bs5', 'bootstrap-init'), $this->version, true);
+        wp_enqueue_script('medoffice-calendar', plugin_dir_url(__FILE__) . 'js/calendar.js', array('jquery', 'bootstrap-bundle', 'fullcalendar', 'bootstrap-init'), $this->version, true);
+        wp_enqueue_script('medoffice-prescription', plugin_dir_url(__FILE__) . 'js/prescription.js', array('jquery', 'bootstrap-bundle', 'jspdf', 'bootstrap-init'), $this->version, true);
 
         // Paramètres AJAX pour tous les scripts
         $ajax_data = array(
