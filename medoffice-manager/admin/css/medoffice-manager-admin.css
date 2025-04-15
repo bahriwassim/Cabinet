@@ -1,0 +1,297 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ *
+ * @link       https://stikyconsulting.com
+ * @since      1.0.0
+ * 
+ * @package    MedOffice_Manager
+ * @subpackage MedOffice_Manager/admin/css
+ */
+
+/* General Styles */
+.medoffice-dashboard,
+.medoffice-patients,
+.medoffice-consultations,
+.medoffice-calendar,
+.medoffice-settings {
+    padding: 20px 0;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+    padding: 0.75rem 1.25rem;
+}
+
+.border-left-primary {
+    border-left: 0.25rem solid #4e73df !important;
+}
+
+.border-left-success {
+    border-left: 0.25rem solid #1cc88a !important;
+}
+
+.border-left-info {
+    border-left: 0.25rem solid #36b9cc !important;
+}
+
+.border-left-warning {
+    border-left: 0.25rem solid #f6c23e !important;
+}
+
+.border-left-danger {
+    border-left: 0.25rem solid #e74a3b !important;
+}
+
+.text-gray-300 {
+    color: #dddfeb !important;
+}
+
+.text-gray-800 {
+    color: #5a5c69 !important;
+}
+
+/* Dashboard Stats */
+.stats-cards .card-body {
+    padding: 1.25rem;
+}
+
+.chart-area {
+    position: relative;
+    height: 300px;
+}
+
+/* Patient Cards in Grid View */
+.patient-card {
+    transition: all 0.3s ease;
+}
+
+.patient-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1.5rem 0 rgba(58, 59, 69, 0.2);
+}
+
+.avatar-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Modal Styles */
+.modal-content {
+    border: none;
+    border-radius: 8px;
+}
+
+.modal-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.modal-footer {
+    border-top: 1px solid #e3e6f0;
+}
+
+/* Tabs */
+.nav-tabs .nav-link {
+    color: #5a5c69;
+    border-radius: 0.35rem 0.35rem 0 0;
+}
+
+.nav-tabs .nav-link.active {
+    color: #4e73df;
+    border-bottom: 2px solid #4e73df;
+}
+
+.nav-tabs .nav-link:hover:not(.active) {
+    border-color: transparent;
+    background-color: rgba(78, 115, 223, 0.1);
+}
+
+/* Calendar Styles */
+#calendar {
+    height: 700px;
+}
+
+.fc-daygrid-day-number, 
+.fc-col-header-cell-cushion {
+    color: #5a5c69;
+    text-decoration: none;
+}
+
+.fc-daygrid-day.fc-day-today {
+    background-color: rgba(78, 115, 223, 0.1) !important;
+}
+
+.fc-event {
+    border-radius: 4px;
+    padding: 3px;
+    cursor: pointer;
+}
+
+.event-confirmed {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+.event-pending {
+    background-color: #f6c23e;
+    border-color: #f6c23e;
+}
+
+.event-cancelled {
+    background-color: #e74a3b;
+    border-color: #e74a3b;
+}
+
+.fc-event-desc {
+    font-size: 0.8em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.calendar-toolbar .btn-group {
+    margin-bottom: 10px;
+}
+
+/* Search Box */
+.search-box .input-group {
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.search-box .input-group-text {
+    background-color: transparent;
+    border-right: none;
+}
+
+.search-box .form-control {
+    border-left: none;
+}
+
+.search-box .form-control:focus {
+    box-shadow: none;
+}
+
+/* Date Range Filter */
+.date-range-filter {
+    display: flex;
+    align-items: center;
+}
+
+/* Ordonnance Preview */
+.prescription-container {
+    font-family: Arial, sans-serif;
+    max-width: 148mm; /* A5 width */
+    margin: 0 auto;
+    padding: 10mm;
+    border: 1px solid #ddd;
+}
+
+.prescription-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10mm;
+}
+
+.doctor-info {
+    flex: 1;
+}
+
+.prescription-title {
+    display: flex;
+    align-items: center;
+}
+
+.prescription-title h1 {
+    font-size: 20px;
+    margin: 0;
+}
+
+.prescription-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8mm;
+}
+
+.prescription-content {
+    min-height: 100mm;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    padding: 5mm 0;
+    margin-bottom: 8mm;
+}
+
+.prescription-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.doctor-signature {
+    text-align: center;
+    width: 50mm;
+}
+
+.signature-line {
+    margin-top: 15mm;
+    border-top: 1px solid #000;
+}
+
+/* Patient details */
+.patient-info {
+    margin-top: 15px;
+}
+
+/* DataTables customization */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    margin: 0 3px;
+    border: 1px solid #ddd !important;
+    border-radius: 4px;
+    padding: 5px 10px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current, 
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: #4e73df !important;
+    color: white !important;
+    border: 1px solid #4e73df !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #eaecf4 !important;
+    border: 1px solid #eaecf4 !important;
+    color: #333 !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .calendar-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .calendar-toolbar > div {
+        margin-bottom: 10px;
+    }
+    
+    .date-range-filter {
+        width: 100%;
+    }
+    
+    .date-range-filter .form-control {
+        font-size: 0.8rem;
+    }
+}
