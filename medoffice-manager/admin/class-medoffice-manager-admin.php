@@ -86,11 +86,18 @@ class MedOffice_Manager_Admin {
         wp_enqueue_script('medoffice-calendar', plugin_dir_url(__FILE__) . 'js/calendar.js', array('jquery', 'bootstrap-bundle', 'fullcalendar'), $this->version, true);
         wp_enqueue_script('medoffice-prescription', plugin_dir_url(__FILE__) . 'js/prescription.js', array('jquery', 'bootstrap-bundle', 'jspdf'), $this->version, true);
 
-        wp_localize_script($this->plugin_name, 'medoffice_ajax', array(
+        // Paramètres AJAX pour tous les scripts
+        $ajax_data = array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('medoffice_nonce'),
             'plugin_url' => MEDOFFICE_MANAGER_PLUGIN_URL
-        ));
+        );
+        
+        wp_localize_script($this->plugin_name, 'medoffice_ajax', $ajax_data);
+        wp_localize_script('medoffice-patients', 'medoffice_ajax', $ajax_data);
+        wp_localize_script('medoffice-consultations', 'medoffice_ajax', $ajax_data);
+        wp_localize_script('medoffice-calendar', 'medoffice_ajax', $ajax_data);
+        wp_localize_script('medoffice-prescription', 'medoffice_ajax', $ajax_data);
     }
 
     /**
