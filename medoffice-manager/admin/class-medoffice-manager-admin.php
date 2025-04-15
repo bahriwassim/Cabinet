@@ -59,6 +59,9 @@ class MedOffice_Manager_Admin {
         
         // Notre CSS personnalisé (chargé en dernier pour pouvoir surcharger les styles des bibliothèques)
         wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/medoffice-manager-admin.css', array('bootstrap', 'datatables-bs5', 'fullcalendar', 'fontawesome'), $this->version, 'all');
+        
+        // Fichier de corrections CSS avec priorité maximale (s'assure qu'il écrase tout le reste)
+        wp_enqueue_style('medoffice-fixes', plugin_dir_url(__FILE__) . 'css/medoffice-fixes.css', array('bootstrap', $this->plugin_name), $this->version, 'all');
     }
 
     /**
@@ -81,6 +84,9 @@ class MedOffice_Manager_Admin {
         
         // Script d'initialisation Bootstrap (doit être chargé avant nos scripts personnalisés)
         wp_enqueue_script('bootstrap-init', plugin_dir_url(__FILE__) . 'js/bootstrap-init.js', array('jquery', 'bootstrap-bundle'), $this->version, true);
+        
+        // Script d'initialisation des onglets spécifiques (assure le fonctionnement de tous les composants)
+        wp_enqueue_script('tab-initializer', plugin_dir_url(__FILE__) . 'js/tab-initializer.js', array('jquery', 'bootstrap-bundle', 'datatables', 'fullcalendar'), $this->version, true);
         
         // Scripts du plugin (chargés dans le footer pour s'assurer que les dépendances sont disponibles)
         wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/medoffice-manager-admin.js', array('jquery', 'bootstrap-bundle', 'bootstrap-init'), $this->version, true);
