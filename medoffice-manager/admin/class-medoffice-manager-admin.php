@@ -68,18 +68,23 @@ class MedOffice_Manager_Admin {
             return;
         }
 
-        wp_enqueue_script('bootstrap-bundle', 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '5.2.3', false);
-        wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js', array(), '4.3.0', false);
-        wp_enqueue_script('datatables', 'https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js', array('jquery'), '1.13.4', false);
-        wp_enqueue_script('datatables-bs5', 'https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js', array('datatables'), '1.13.4', false);
-        wp_enqueue_script('fullcalendar', 'https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js', array(), '5.11.3', false);
-        wp_enqueue_script('jspdf', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', array(), '2.5.1', false);
+        // Assurons-nous que jQuery est chargé en premier
+        wp_enqueue_script('jquery');
         
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/medoffice-manager-admin.js', array('jquery'), $this->version, false);
-        wp_enqueue_script('medoffice-patients', plugin_dir_url(__FILE__) . 'js/patients.js', array('jquery'), $this->version, false);
-        wp_enqueue_script('medoffice-consultations', plugin_dir_url(__FILE__) . 'js/consultations.js', array('jquery'), $this->version, false);
-        wp_enqueue_script('medoffice-calendar', plugin_dir_url(__FILE__) . 'js/calendar.js', array('jquery', 'fullcalendar'), $this->version, false);
-        wp_enqueue_script('medoffice-prescription', plugin_dir_url(__FILE__) . 'js/prescription.js', array('jquery', 'jspdf'), $this->version, false);
+        // Bibliothèques externes
+        wp_enqueue_script('bootstrap-bundle', 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js', array('jquery'), '5.2.3', true);
+        wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js', array('jquery'), '4.3.0', true);
+        wp_enqueue_script('datatables', 'https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js', array('jquery'), '1.13.4', true);
+        wp_enqueue_script('datatables-bs5', 'https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js', array('jquery', 'datatables', 'bootstrap-bundle'), '1.13.4', true);
+        wp_enqueue_script('fullcalendar', 'https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js', array('jquery'), '5.11.3', true);
+        wp_enqueue_script('jspdf', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', array('jquery'), '2.5.1', true);
+        
+        // Scripts du plugin (chargés dans le footer pour s'assurer que les dépendances sont disponibles)
+        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/medoffice-manager-admin.js', array('jquery', 'bootstrap-bundle'), $this->version, true);
+        wp_enqueue_script('medoffice-patients', plugin_dir_url(__FILE__) . 'js/patients.js', array('jquery', 'bootstrap-bundle', 'datatables', 'datatables-bs5'), $this->version, true);
+        wp_enqueue_script('medoffice-consultations', plugin_dir_url(__FILE__) . 'js/consultations.js', array('jquery', 'bootstrap-bundle', 'datatables', 'datatables-bs5'), $this->version, true);
+        wp_enqueue_script('medoffice-calendar', plugin_dir_url(__FILE__) . 'js/calendar.js', array('jquery', 'bootstrap-bundle', 'fullcalendar'), $this->version, true);
+        wp_enqueue_script('medoffice-prescription', plugin_dir_url(__FILE__) . 'js/prescription.js', array('jquery', 'bootstrap-bundle', 'jspdf'), $this->version, true);
 
         wp_localize_script($this->plugin_name, 'medoffice_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
