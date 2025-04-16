@@ -24,8 +24,9 @@
             return;
         }
 
-        // Initialize DataTable for consultations
-        consultationsTable = $('#consultations-table').DataTable({
+        // Initialize DataTable for consultations only if not already initialized
+        if ($.fn.DataTable && !$.fn.dataTable.isDataTable('#consultations-table')) {
+            consultationsTable = $('#consultations-table').DataTable({
             ajax: {
                 url: medoffice_ajax.ajax_url,
                 type: 'POST',

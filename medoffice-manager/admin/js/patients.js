@@ -21,8 +21,9 @@
             return;
         }
 
-        // Initialize DataTable for patients
-        patientsTable = $('#patients-table').DataTable({
+        // Initialize DataTable for patients only if not already initialized
+        if ($.fn.DataTable && !$.fn.dataTable.isDataTable('#patients-table')) {
+            patientsTable = $('#patients-table').DataTable({
             ajax: {
                 url: medoffice_ajax.ajax_url,
                 type: 'POST',
@@ -101,6 +102,7 @@
                 url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
             }
         });
+        }
         
         // Initialize search
         $('#patient-search').on('keyup', function() {
