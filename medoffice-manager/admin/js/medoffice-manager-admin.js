@@ -28,19 +28,19 @@
             success: function(response) {
                 if (response.success) {
                     const data = response.data;
-                    
+
                     // Update cards
                     $('#total-patients').text(data.total_patients);
                     $('#total-consultations').text(data.total_consultations);
                     $('#total-appointments-today').text(data.total_appointments_today);
                     $('#unpaid-fees').text(data.unpaid_fees + ' TND');
-                    
+
                     // Create chart
                     createConsultationsChart(data.chart_data);
-                    
+
                     // Populate upcoming appointments
                     populateUpcomingAppointments(data.upcoming_appointments);
-                    
+
                     // Populate recent patients table
                     populateRecentPatientsTable(data.recent_patients);
                 }
@@ -56,11 +56,11 @@
      */
     function createConsultationsChart(chartData) {
         const ctx = document.getElementById('consultationsChart');
-        
+
         if (!ctx) {
             return;
         }
-        
+
         new Chart(ctx, {
             type: 'line',
             data: {
@@ -109,25 +109,25 @@
      */
     function populateUpcomingAppointments(appointments) {
         const container = $('#upcoming-appointments-list');
-        
+
         if (appointments.length === 0) {
             container.html('<p class="text-center text-muted">Aucun rendez-vous à venir</p>');
             return;
         }
-        
+
         let html = '<div class="list-group">';
-        
+
         appointments.forEach(appointment => {
             const dateObj = new Date(appointment.date_debut);
             const formattedDate = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            
+
             let statusClass = 'bg-success';
             if (appointment.status === 'en attente') {
                 statusClass = 'bg-warning';
             } else if (appointment.status === 'annulé') {
                 statusClass = 'bg-danger';
             }
-            
+
             html += `
                 <a href="#" class="list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-between">
@@ -142,7 +142,7 @@
                 </a>
             `;
         });
-        
+
         html += '</div>';
         container.html(html);
     }
@@ -152,18 +152,18 @@
      */
     function populateRecentPatientsTable(patients) {
         const tableBody = $('#recent-patients-table tbody');
-        
+
         if (patients.length === 0) {
             tableBody.html('<tr><td colspan="6" class="text-center">Aucun patient trouvé</td></tr>');
             return;
         }
-        
+
         tableBody.empty();
-        
+
         patients.forEach(patient => {
             const creationDate = new Date(patient.date_creation);
             const formattedDate = creationDate.toLocaleDateString();
-            
+
             tableBody.append(`
                 <tr>
                     <td>${patient.id}</td>
@@ -182,7 +182,7 @@
                 </tr>
             `);
         });
-        
+
         // Handle view patient click
         $('.view-patient').on('click', function() {
             const patientId = $(this).data('id');
@@ -202,7 +202,7 @@
         // Media uploader for logo
         $('#select-logo').on('click', function(e) {
             e.preventDefault();
-            
+
             const customUploader = wp.media({
                 title: 'Sélectionner un logo',
                 button: {
@@ -210,22 +210,22 @@
                 },
                 multiple: false
             });
-            
+
             customUploader.on('select', function() {
                 const attachment = customUploader.state().get('selection').first().toJSON();
                 $('#logo_cabinet').val(attachment.id);
                 $('.logo-preview').html(`<img src="${attachment.url}" alt="Logo" style="max-height: 100px;">`);
             });
-            
+
             customUploader.open();
         });
-        
+
         // Save settings
         $('#settings-form').on('submit', function(e) {
             e.preventDefault();
-            
+
             const formData = $(this).serialize();
-            
+
             $.ajax({
                 url: medoffice_ajax.ajax_url,
                 type: 'POST',
@@ -260,7 +260,7 @@
     $(document).ready(function() {
         // Initialize dashboard
         initDashboard();
-        
+
         // Initialize settings
         initSettings();
 
@@ -269,11 +269,22 @@
             e.preventDefault();
             $('#settings-form').submit();
         });
-        
+
         // Global AJAX error handler
         $(document).ajaxError(function(event, jqXHR, settings, error) {
             console.error('AJAX Error:', error, jqXHR.responseText);
         });
+
+        // Initialize all modules
+        if (typeof window.initPatients === 'function') {
+            window.initPatients();
+        }
+        if (typeof window.initConsultations === 'function') {
+            window.initConsultations();
+        }
+        if (typeof window.initCalendar === 'function') {
+            window.initCalendar();
+        }
     });
 
 })(jQuery);

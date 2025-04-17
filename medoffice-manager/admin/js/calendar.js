@@ -21,11 +21,11 @@
         }
 
         const calendarEl = document.getElementById('calendar');
-        
+
         if (!calendarEl) {
             return;
         }
-        
+
         // Initialize FullCalendar
         calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
@@ -54,26 +54,26 @@
             eventContent: function(info) {
                 let title = info.event.title;
                 let timeText = '';
-                
+
                 // For non-all-day events, show the time
                 if (!info.event.allDay) {
                     const start = info.event.start;
                     timeText = start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 }
-                
+
                 // Get patient name from extendedProps
                 const patientName = info.event.extendedProps.patientName || '';
-                
+
                 // Get event status for styling
                 const status = info.event.extendedProps.status || 'confirmé';
                 let statusClass = 'event-confirmed';
-                
+
                 if (status === 'en attente') {
                     statusClass = 'event-pending';
                 } else if (status === 'annulé') {
                     statusClass = 'event-cancelled';
                 }
-                
+
                 return {
                     html: `
                         <div class="fc-event-main-wrapper ${statusClass}">
@@ -87,74 +87,74 @@
                 };
             }
         });
-        
+
         calendar.render();
-        
+
         // Custom toolbar buttons
         $('#today-button').on('click', function() {
             calendar.today();
         });
-        
+
         $('#prev-button').on('click', function() {
             calendar.prev();
         });
-        
+
         $('#next-button').on('click', function() {
             calendar.next();
         });
-        
+
         $('.view-option').on('click', function() {
             const view = $(this).data('view');
             calendar.changeView(view);
             $('.view-option').removeClass('active');
             $(this).addClass('active');
         });
-        
+
         // Set initial active view
         $('.view-option[data-view="dayGridMonth"]').addClass('active');
-        
+
         // Initialize add appointment button
         $('#add-new-appointment').on('click', function() {
             resetAppointmentForm();
             currentAppointmentId = 0;
-            
+
             // Set default date to current time, rounded to nearest half hour
             const now = new Date();
             now.setMinutes(Math.ceil(now.getMinutes() / 30) * 30);
             now.setSeconds(0);
-            
+
             // Set end time 30 minutes after start time
             const end = new Date(now);
             end.setMinutes(end.getMinutes() + 30);
-            
+
             $('#date_debut').val(formatDatetimeForInput(now));
             $('#date_fin').val(formatDatetimeForInput(end));
-            
+
             // Update modal title and show the modal
             $('#appointmentModalLabel').text('Nouveau rendez-vous');
             $('#delete-appointment').hide();
             $('#appointmentModal').modal('show');
         });
-        
+
         // Load patients for the select dropdown
         loadPatientOptions();
-        
+
         // Handle new patient button
         $('#create-new-patient-appointment').on('click', function() {
             $('#appointmentModal').modal('hide');
             $('#newPatientModal').modal('show');
         });
-        
+
         // Save quick patient
         $('#save-quick-patient').on('click', function() {
             saveQuickPatient();
         });
-        
+
         // Save appointment
         $('#save-appointment').on('click', function() {
             saveAppointment();
         });
-        
+
         // Delete appointment
         $('#delete-appointment').on('click', function() {
             if (confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')) {
@@ -162,7 +162,7 @@
             }
         });
     }
-    
+
     /**
      * Load events (appointments) from the server
      */
@@ -195,7 +195,7 @@
                             borderColor: getStatusColor(appointment.status)
                         };
                     });
-                    
+
                     successCallback(events);
                 } else {
                     failureCallback(new Error('Failed to load events'));
@@ -206,31 +206,31 @@
             }
         });
     }
-    
+
     /**
      * Handle date selection on the calendar
      */
     function handleDateSelect(info) {
         resetAppointmentForm();
         currentAppointmentId = 0;
-        
+
         // Set the selected date/time in the form
         $('#date_debut').val(formatDatetimeForInput(info.start));
         $('#date_fin').val(formatDatetimeForInput(info.end));
-        
+
         // Update modal title and show the modal
         $('#appointmentModalLabel').text('Nouveau rendez-vous');
         $('#delete-appointment').hide();
         $('#appointmentModal').modal('show');
     }
-    
+
     /**
      * Handle event click
      */
     function handleEventClick(info) {
         const event = info.event;
         currentAppointmentId = event.id;
-        
+
         // Fill the form with event data
         $('#appointment_id').val(event.id);
         $('#appointment_patient_selector').val(event.extendedProps.patientId);
@@ -239,14 +239,14 @@
         $('#titre').val(event.title);
         $('#description').val(event.extendedProps.description);
         $('#status').val(event.extendedProps.status);
-        
+
         // Update modal title and show delete button
         $('#appointmentModalLabel').text('Modifier le rendez-vous');
         $('#delete-appointment').show();
-        
+
         $('#appointmentModal').modal('show');
     }
-    
+
     /**
      * Handle event change (drag & drop)
      */
@@ -261,7 +261,7 @@
             description: event.extendedProps.description,
             status: event.extendedProps.status
         };
-        
+
         // Save the changes to the server
         $.ajax({
             url: medoffice_ajax.ajax_url,
@@ -277,7 +277,7 @@
             }
         });
     }
-    
+
     /**
      * Save appointment
      */
@@ -286,13 +286,13 @@
         const dateDebut = $('#date_debut').val();
         const dateFin = $('#date_fin').val();
         const titre = $('#titre').val();
-        
+
         // Validate required fields
         if (!patientId || !dateDebut || !dateFin || !titre) {
             alert('Veuillez remplir tous les champs obligatoires.');
             return;
         }
-        
+
         // Prepare appointment data
         const appointmentData = {
             id: currentAppointmentId,
@@ -303,7 +303,7 @@
             description: $('#description').val(),
             status: $('#status').val()
         };
-        
+
         // Save to server
         $.ajax({
             url: medoffice_ajax.ajax_url,
@@ -320,7 +320,7 @@
                 if (response.success) {
                     $('#appointmentModal').modal('hide');
                     calendar.refetchEvents();
-                    
+
                     if (currentAppointmentId === 0) {
                         alert('Rendez-vous créé avec succès !');
                     } else {
@@ -338,7 +338,7 @@
             }
         });
     }
-    
+
     /**
      * Delete appointment
      */
@@ -346,7 +346,7 @@
         if (!currentAppointmentId) {
             return;
         }
-        
+
         $.ajax({
             url: medoffice_ajax.ajax_url,
             type: 'POST',
@@ -375,7 +375,7 @@
             }
         });
     }
-    
+
     /**
      * Save quick patient
      */
@@ -384,13 +384,13 @@
         const prenom = $('#quick_prenom').val();
         const sexe = $('#quick_sexe').val();
         const telephone = $('#quick_telephone').val();
-        
+
         // Validate required fields
         if (!nom || !prenom || !sexe || !telephone) {
             alert('Veuillez remplir tous les champs obligatoires.');
             return;
         }
-        
+
         // Prepare patient data
         const patientData = {
             id: 0,
@@ -399,7 +399,7 @@
             sexe: sexe,
             telephone: telephone
         };
-        
+
         // Save to server
         $.ajax({
             url: medoffice_ajax.ajax_url,
@@ -415,17 +415,17 @@
             success: function(response) {
                 if (response.success) {
                     $('#newPatientModal').modal('hide');
-                    
+
                     // Add the new patient to the dropdown and select it
                     const newPatientId = response.data.patient_id;
                     const newPatientName = prenom + ' ' + nom;
-                    
+
                     const newOption = new Option(newPatientName, newPatientId, true, true);
                     $('#appointment_patient_selector').append(newOption).trigger('change');
-                    
+
                     // Show the appointment modal again
                     $('#appointmentModal').modal('show');
-                    
+
                     // Reset the form
                     $('#quick-patient-form')[0].reset();
                 } else {
@@ -440,7 +440,7 @@
             }
         });
     }
-    
+
     /**
      * Load patient options for select dropdown
      */
@@ -456,9 +456,9 @@
                 if (response.success) {
                     const patients = response.data;
                     const select = $('#appointment_patient_selector');
-                    
+
                     select.empty().append('<option value="">Sélectionner un patient</option>');
-                    
+
                     patients.forEach(function(patient) {
                         select.append(`<option value="${patient.id}">${patient.prenom} ${patient.nom}</option>`);
                     });
@@ -466,7 +466,7 @@
             }
         });
     }
-    
+
     /**
      * Reset appointment form
      */
@@ -474,7 +474,7 @@
         $('#appointment-form')[0].reset();
         $('#appointment_id').val(0);
     }
-    
+
     /**
      * Format a date for datetime-local input
      */
@@ -482,7 +482,7 @@
         if (!(date instanceof Date)) {
             date = new Date(date);
         }
-        
+
         // Format to YYYY-MM-DDThh:mm
         return date.getFullYear() + '-' + 
                padNumber(date.getMonth() + 1) + '-' + 
@@ -490,14 +490,14 @@
                padNumber(date.getHours()) + ':' + 
                padNumber(date.getMinutes());
     }
-    
+
     /**
      * Pad a number with leading zero if needed
      */
     function padNumber(num) {
         return num.toString().padStart(2, '0');
     }
-    
+
     /**
      * Get color based on appointment status
      */

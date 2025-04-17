@@ -215,7 +215,36 @@
         });
         
         // Handle patient selection change
-        $('#patient_selector').on('change', function() {
+        // Initialize select2 for better search
+$('#patient_selector').select2({
+    placeholder: 'Rechercher un patient...',
+    allowClear: true,
+    width: '100%',
+    language: 'fr',
+    minimumInputLength: 2,
+    ajax: {
+        url: medoffice_ajax.ajax_url,
+        dataType: 'json',
+        delay: 250,
+        data: function(params) {
+            return {
+                action: 'medoffice_search_patients',
+                nonce: medoffice_ajax.nonce,
+                search: params.term
+            };
+        },
+        processResults: function(data) {
+            return {
+                results: data.success ? data.data.map(function(patient) {
+                    return {
+                        id: patient.id,
+                        text: patient.prenom + ' ' + patient.nom + ' - ' + patient.telephone
+                    };
+                }) : []
+            };
+        }
+    }
+}).on('change', function() {
             selectedPatientId = $(this).val();
             if (selectedPatientId) {
                 loadPatientInfo(selectedPatientId);

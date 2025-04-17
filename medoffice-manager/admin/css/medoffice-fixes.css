@@ -291,3 +291,89 @@
 .justify-content-center { justify-content: center !important; }
 .justify-content-end { justify-content: flex-end !important; }
 .justify-content-between { justify-content: space-between !important; }
+
+/* Menu interactif */
+.medoffice-sidebar {
+    position: fixed;
+    left: 0;
+    top: 32px;
+    bottom: 0;
+    width: 240px;
+    background: #2c3338;
+    color: #fff;
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.medoffice-sidebar.collapsed {
+    width: 60px;
+}
+
+.medoffice-sidebar .menu-item {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.medoffice-sidebar .menu-item:hover {
+    background: #3c434a;
+}
+
+.medoffice-sidebar .menu-item i {
+    width: 30px;
+    text-align: center;
+}
+
+.medoffice-content {
+    margin-left: 240px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.medoffice-content.expanded {
+    margin-left: 60px;
+}
+
+/* Organisation des pages */
+.card-dashboard {
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-dashboard .card-header {
+    border-radius: 8px 8px 0 0;
+    background: #f8f9fa;
+    padding: 15px;
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Responsive fixes */
+@media (max-width: 768px) {
+    .medoffice-sidebar {
+        width: 60px;
+    }
+
+    .medoffice-content {
+        margin-left: 60px;
+    }
+
+    .medoffice-sidebar .menu-text {
+        display: none;
+    }
+}
