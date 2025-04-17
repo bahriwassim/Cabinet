@@ -1173,7 +1173,24 @@ $('#patient_selector').select2({
     /**
      * Save payment
      */
-    function savePayment() {
+    /**
+ * Handle payment installments
+ */
+function saveInstallment(consultationId, date, amount) {
+    return $.ajax({
+        url: medoffice_ajax.ajax_url,
+        type: 'POST',
+        data: {
+            action: 'medoffice_save_installment',
+            nonce: medoffice_ajax.nonce,
+            consultation_id: consultationId,
+            date_echeance: date,
+            montant: amount
+        }
+    });
+}
+
+function savePayment() {
         const paymentForm = $('#payment-form');
         
         // Basic form validation

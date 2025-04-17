@@ -50,7 +50,10 @@
 
         // Initialiser une nouvelle table
         console.log('Création nouvelle instance DataTable pour patients');
-        window.patientsTable = $('#patients-table').DataTable({
+        if ($.fn.DataTable.isDataTable('#patients-table')) {
+        $('#patients-table').DataTable().destroy();
+    }
+    window.patientsTable = $('#patients-table').DataTable({
             ajax: {
                 url: medoffice_ajax.ajax_url,
                 type: 'POST',
