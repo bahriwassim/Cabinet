@@ -71,10 +71,9 @@
                 }
             },
             columns: [
-                { data: 'id', name: 'id' },
+                { data: "ID" },
                 { 
                     data: null,
-                    name: 'nom_complet',
                     render: function(data, type, row) {
                         return `${row.prenom} ${row.nom}`;
                     }

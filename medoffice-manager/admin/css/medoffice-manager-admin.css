@@ -300,3 +300,24 @@
         font-size: 0.8rem;
     }
 }
+/* Full width table styles */
+.dataTables_wrapper {
+    width: 100% !important;
+    margin: 0 auto;
+}
+
+.table-responsive {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Card styles for better spacing */
+.card {
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+.card-body {
+    padding: 1.25rem;
+}

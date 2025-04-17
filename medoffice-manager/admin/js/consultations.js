@@ -67,7 +67,7 @@
                 }
             },
             columns: [
-                { data: 'id', name: 'id' },
+                { data: "ID" },
                     
                     // Add date range filters if present
                     const startDate = $('#date-filter-start').val();
@@ -1506,3 +1506,119 @@ $('#patient_selector').select2({
     window.initConsultations = initConsultations;
 
 })(jQuery);
+/**
+     * Show payment installments modal
+     */
+    function showInstallmentsModal(consultationId) {
+        currentConsultationId = consultationId;
+        
+        $.ajax({
+            url: medoffice_ajax.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'medoffice_get_consultation',
+                nonce: medoffice_ajax.nonce,
+                consultation_id: consultationId,
+                include_payments: true,
+                include_installments: true
+            },
+            success: function(response) {
+                if (response.success) {
+                    const consultation = response.data.consultation;
+                    const payments = response.data.payments || [];
+                    const installments = response.data.installments || [];
+                    
+                    // Calculate total and remaining amounts
+                    let totalPaid = 0;
+                    payments.forEach(function(payment) {
+                        totalPaid += parseFloat(payment.montant);
+                    });
+                    
+                    const totalHonoraire = parseFloat(consultation.total_honoraire);
+                    const remainingAmount = totalHonoraire - totalPaid;
+                    
+                    // Update modal content
+                    let installmentsHtml = `
+                        <div class="mb-3">
+                            <label>Montant total: ${totalHonoraire} TND</label><br>
+                            <label>Montant payé: ${totalPaid} TND</label><br>
+                            <label>Reste à payer: ${remainingAmount} TND</label>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Date échéance</th>
+                                    <th>Montant</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="installments-list">
+                    `;
+                    
+                    installments.forEach(function(installment) {
+                        installmentsHtml += `
+                            <tr>
+                                <td>${new Date(installment.date_echeance).toLocaleDateString()}</td>
+                                <td>${installment.montant} TND</td>
+                                <td>${installment.est_paye ? '<span class="badge bg-success">Payé</span>' : '<span class="badge bg-warning">En attente</span>'}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-success pay-installment" data-id="${installment.id}">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    installmentsHtml += `
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-primary" id="add-installment">
+                            <i class="fas fa-plus"></i> Ajouter une échéance
+                        </button>
+                    `;
+                    
+                    $('#installments-modal-content').html(installmentsHtml);
+                    $('#installmentsModal').modal('show');
+                    
+                    // Add event handlers
+                    $('#add-installment').on('click', function() {
+                        addInstallment(consultationId, remainingAmount);
+                    });
+                    
+                    $('.pay-installment').on('click', function() {
+                        const installmentId = $(this).data('id');
+                        payInstallment(installmentId);
+                    });
+                }
+            }
+        });
+    }
+    
+    /**
+     * Add new installment
+     */
+    function addInstallment(consultationId, remainingAmount) {
+        const date = prompt("Date d'échéance (YYYY-MM-DD):");
+        const amount = prompt("Montant (TND):", remainingAmount);
+        
+        if (!date || !amount) return;
+        
+        $.ajax({
+            url: medoffice_ajax.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'medoffice_add_installment',
+                nonce: medoffice_ajax.nonce,
+                consultation_id: consultationId,
+                date_echeance: date,
+                montant: amount
+            },
+            success: function(response) {
+                if (response.success) {
+                    showInstallmentsModal(consultationId);
+                }
+            }
+        });
+    }
