@@ -91,22 +91,22 @@
                 }
             },
             columns: [
-                { data: 'id' },
+                { data: "ID" },
                 { 
-                    data: 'date_consultation',
+                    data: "date_consultation",
                     render: function(data, type, row) {
                         return new Date(data).toLocaleString();
                     }
                 },
                 { 
-                    data: null,
+                    data: "patient_nom",
                     render: function(data, type, row) {
-                        return `${row.patient_prenom} ${row.patient_nom}`;
+                        return row.patient_prenom + ' ' + row.patient_nom;
                     }
                 },
-                { data: 'motif' },
+                { data: "motif" },
                 { 
-                    data: 'total_honoraire',
+                    data: "total_honoraire",
                     render: function(data, type, row) {
                         return data + ' TND';
                     }
