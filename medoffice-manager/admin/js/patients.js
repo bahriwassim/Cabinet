@@ -11,7 +11,7 @@
     // Définir les variables globales pour tout le plugin
     let currentPatientId = 0;
     let currentView = 'list'; // 'list' or 'grid'
-    
+
     // Supprimer toute référence à window.patientsTable pour éviter des conflits
     if (window.patientsTable) {
         try {
@@ -27,13 +27,13 @@
      */
     function initPatients() {
         console.log('Initialisation de la page patients...');
-        
+
         // Only initialize if we're on the patients page
         if (!$('.medoffice-patients').length) {
             console.log('Non sur la page patients, sortie');
             return;
         }
-        
+
         console.log('Sur la page patients, initialisation des composants');
 
         // Vérifier si la table existe dans le DOM
@@ -41,7 +41,7 @@
             console.error('Erreur: Table #patients-table non trouvée dans le DOM');
             return;
         }
-        
+
         // Détruire DataTable existante si elle existe
         if ($.fn.DataTable.isDataTable('#patients-table')) {
             $('#patients-table').DataTable().destroy();
@@ -71,19 +71,21 @@
                 }
             },
             columns: [
-                { data: 'id' },
+                { data: 'id', name: 'id' },
                 { 
                     data: null,
+                    name: 'nom_complet',
                     render: function(data, type, row) {
                         return `${row.prenom} ${row.nom}`;
                     }
                 },
-                { data: 'sexe' },
+                { data: 'sexe', name: 'sexe' },
                 { 
                     data: 'date_naissance',
+                    name: 'date_naissance',
                     render: function(data, type, row) {
                         if (!data) return 'N/A';
-                        
+
                         // Calculate age
                         const birthDate = new Date(data);
                         const today = new Date();
@@ -92,19 +94,21 @@
                         if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
                             age--;
                         }
-                        
+
                         return age + ' ans';
                     }
                 },
-                { data: 'telephone' },
+                { data: 'telephone', name: 'telephone' },
                 { 
                     data: 'date_creation',
+                    name: 'date_creation',
                     render: function(data, type, row) {
                         return new Date(data).toLocaleDateString();
                     }
                 },
                 {
                     data: null,
+                    name: 'actions',
                     orderable: false,
                     render: function(data, type, row) {
                         return `
@@ -129,110 +133,19 @@
                 url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
             }
         });
-        }
-        
-        // Initialize search
-        $('#patient-search').on('keyup', function() {
-            window.patientsTable.search($(this).val()).draw();
-        });
-
-        // Add new patient button
-        $('#add-new-patient').on('click', function() {
-            resetPatientForm();
-            currentPatientId = 0;
-            $('#patientModalLabel').text('Ajouter un patient');
-            $('#patientModal').modal('show');
-        });
-        
-        // Save patient
-        $('#save-patient').on('click', function() {
-            savePatient();
-        });
-        
-        // Toggle view mode (list/grid)
-        $('#toggle-view-mode').on('click', function() {
-            if (currentView === 'list') {
-                $('#patient-list-view').hide();
-                $('#patient-grid-view').show();
-                currentView = 'grid';
-            } else {
-                $('#patient-grid-view').hide();
-                $('#patient-list-view').show();
-                currentView = 'list';
-            }
-        });
-        
-        // Filter options
-        $('.filter-option').on('click', function(e) {
-            e.preventDefault();
-            const filter = $(this).data('filter');
-            $('#patients-table').data('filter', filter);
-            window.patientsTable.ajax.reload();
-        });
-        
-        // Handle patient actions (view, edit, delete)
-        $('#patients-table').on('click', '.view-patient', function() {
-            const patientId = $(this).data('id');
-            viewPatient(patientId);
-        });
-        
-        $('#patients-table').on('click', '.edit-patient', function() {
-            const patientId = $(this).data('id');
-            editPatient(patientId);
-        });
-        
-        $('#patients-table').on('click', '.delete-patient', function() {
-            const patientId = $(this).data('id');
-            currentPatientId = patientId;
-            $('#deletePatientModal').modal('show');
-        });
-        
-        // Handle grid view actions
-        $('#patient-grid-view').on('click', '.view-patient', function() {
-            const patientId = $(this).data('id');
-            viewPatient(patientId);
-        });
-        
-        $('#patient-grid-view').on('click', '.edit-patient', function() {
-            const patientId = $(this).data('id');
-            editPatient(patientId);
-        });
-        
-        $('#patient-grid-view').on('click', '.delete-patient', function() {
-            const patientId = $(this).data('id');
-            currentPatientId = patientId;
-            $('#deletePatientModal').modal('show');
-        });
-        
-        // Confirm delete patient
-        $('#confirm-delete-patient').on('click', function() {
-            deletePatient();
-        });
-        
-        // Patient details modal actions
-        $('#edit-patient-btn').on('click', function() {
-            $('#patientDetailsModal').modal('hide');
-            editPatient(currentPatientId);
-        });
-        
-        $('#add-consultation-btn').on('click', function() {
-            $('#patientDetailsModal').modal('hide');
-            // Redirect to consultations page with patient ID
-            window.location.href = 'admin.php?page=medoffice-consultations&patient=' + currentPatientId;
-        });
     }
-    
+
     /**
      * Update grid view with patients data
      */
     function updateGridView(patients) {
         const gridContainer = $('#patient-grid-view');
         gridContainer.empty();
-        
+
         patients.forEach(function(patient) {
             const avatarColor = patient.sexe === 'Homme' ? 'primary' : 'danger';
             const creationDate = new Date(patient.date_creation).toLocaleDateString();
-            
+
             // Calculate age if birth date exists
             let age = 'N/A';
             if (patient.date_naissance) {
@@ -245,7 +158,7 @@
                 }
                 age = ageYears + ' ans';
             }
-            
+
             const cardHtml = `
                 <div class="col">
                     <div class="card h-100 patient-card">
@@ -289,17 +202,17 @@
                     </div>
                 </div>
             `;
-            
+
             gridContainer.append(cardHtml);
         });
     }
-    
+
     /**
      * View patient details
      */
     function viewPatient(patientId) {
         currentPatientId = patientId;
-        
+
         $.ajax({
             url: medoffice_ajax.ajax_url,
             type: 'POST',
@@ -317,7 +230,7 @@
                     const patient = response.data.patient;
                     const consultations = response.data.consultations || [];
                     const appointments = response.data.appointments || [];
-                    
+
                     // Calculate age if birth date exists
                     let age = 'N/A';
                     if (patient.date_naissance) {
@@ -330,22 +243,22 @@
                         }
                         age = ageYears + ' ans';
                     }
-                    
+
                     // Format date of birth
                     const birthDate = patient.date_naissance ? new Date(patient.date_naissance).toLocaleDateString() : 'N/A';
-                    
+
                     // Build consultations list
                     let consultationsHtml = '';
                     if (consultations.length > 0) {
                         consultationsHtml = '<div class="table-responsive"><table class="table table-bordered table-sm">';
                         consultationsHtml += '<thead><tr><th>Date</th><th>Motif</th><th>Honoraires</th><th>Statut</th><th>Actions</th></tr></thead><tbody>';
-                        
+
                         consultations.forEach(function(consultation) {
                             const date = new Date(consultation.date_consultation).toLocaleString();
                             const statusBadge = consultation.est_paye === '1' ? 
                                 '<span class="badge bg-success">Payé</span>' : 
                                 '<span class="badge bg-warning">Non payé</span>';
-                            
+
                             consultationsHtml += `
                                 <tr>
                                     <td>${date}</td>
@@ -360,28 +273,28 @@
                                 </tr>
                             `;
                         });
-                        
+
                         consultationsHtml += '</tbody></table></div>';
                     } else {
                         consultationsHtml = '<p class="text-muted">Aucune consultation trouvée.</p>';
                     }
-                    
+
                     // Build appointments list
                     let appointmentsHtml = '';
                     if (appointments.length > 0) {
                         appointmentsHtml = '<div class="table-responsive"><table class="table table-bordered table-sm">';
                         appointmentsHtml += '<thead><tr><th>Date</th><th>Titre</th><th>Statut</th><th>Actions</th></tr></thead><tbody>';
-                        
+
                         appointments.forEach(function(appointment) {
                             const date = new Date(appointment.date_debut).toLocaleString();
                             let statusBadge = '<span class="badge bg-primary">Confirmé</span>';
-                            
+
                             if (appointment.status === 'en attente') {
                                 statusBadge = '<span class="badge bg-warning">En attente</span>';
                             } else if (appointment.status === 'annulé') {
                                 statusBadge = '<span class="badge bg-danger">Annulé</span>';
                             }
-                            
+
                             appointmentsHtml += `
                                 <tr>
                                     <td>${date}</td>
@@ -395,12 +308,12 @@
                                 </tr>
                             `;
                         });
-                        
+
                         appointmentsHtml += '</tbody></table></div>';
                     } else {
                         appointmentsHtml = '<p class="text-muted">Aucun rendez-vous trouvé.</p>';
                     }
-                    
+
                     // Build the details HTML
                     const detailsHtml = `
                         <div class="row mb-4">
@@ -471,7 +384,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <ul class="nav nav-tabs" id="patientDetailsTabs" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="consultations-tab" data-bs-toggle="tab" data-bs-target="#consultations-tab-pane" type="button" role="tab">
@@ -484,7 +397,7 @@
                                 </button>
                             </li>
                         </ul>
-                        
+
                         <div class="tab-content mt-3" id="patientDetailsTabsContent">
                             <div class="tab-pane fade show active" id="consultations-tab-pane" role="tabpanel" aria-labelledby="consultations-tab" tabindex="0">
                                 <div class="d-flex justify-content-between mb-3">
@@ -506,9 +419,9 @@
                             </div>
                         </div>
                     `;
-                    
+
                     $('#patient-details-content').html(detailsHtml);
-                    
+
                 } else {
                     $('#patient-details-content').html('<div class="alert alert-danger">Erreur lors du chargement des détails du patient.</div>');
                 }
@@ -518,13 +431,13 @@
             }
         });
     }
-    
+
     /**
      * Edit patient
      */
     function editPatient(patientId) {
         currentPatientId = patientId;
-        
+
         $.ajax({
             url: medoffice_ajax.ajax_url,
             type: 'POST',
@@ -536,7 +449,7 @@
             success: function(response) {
                 if (response.success) {
                     const patient = response.data.patient;
-                    
+
                     // Fill the form
                     $('#patient_id').val(patient.id);
                     $('#nom').val(patient.nom);
@@ -547,10 +460,10 @@
                     $('#email').val(patient.email);
                     $('#adresse').val(patient.adresse);
                     $('#notes').val(patient.notes);
-                    
+
                     // Update modal title
                     $('#patientModalLabel').text('Modifier le patient');
-                    
+
                     // Show the modal
                     $('#patientModal').modal('show');
                 } else {
@@ -562,19 +475,19 @@
             }
         });
     }
-    
+
     /**
      * Save patient
      */
     function savePatient() {
         const patientForm = $('#patient-form');
-        
+
         // Basic form validation
         if (!patientForm[0].checkValidity()) {
             patientForm[0].reportValidity();
             return;
         }
-        
+
         // Prepare patient data
         const patientData = {
             id: $('#patient_id').val(),
@@ -587,7 +500,7 @@
             adresse: $('#adresse').val(),
             notes: $('#notes').val()
         };
-        
+
         // Save to server
         $.ajax({
             url: medoffice_ajax.ajax_url,
@@ -604,7 +517,7 @@
                 if (response.success) {
                     $('#patientModal').modal('hide');
                     window.patientsTable.ajax.reload();
-                    
+
                     if (patientData.id === '0') {
                         alert('Patient ajouté avec succès !');
                     } else {
@@ -622,7 +535,7 @@
             }
         });
     }
-    
+
     /**
      * Delete patient
      */
@@ -630,7 +543,7 @@
         if (!currentPatientId) {
             return;
         }
-        
+
         $.ajax({
             url: medoffice_ajax.ajax_url,
             type: 'POST',
@@ -659,7 +572,7 @@
             }
         });
     }
-    
+
     /**
      * Reset patient form
      */
@@ -674,7 +587,7 @@
     $(document).ready(function() {
         initPatients();
     });
-    
+
     // Rendre la fonction initPatients accessible globalement
     window.initPatients = initPatients;
 

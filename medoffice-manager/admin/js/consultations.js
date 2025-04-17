@@ -61,6 +61,13 @@
                     d.action = 'medoffice_get_consultations';
                     d.nonce = medoffice_ajax.nonce;
                     d.filter = currentFilter;
+                },
+                dataSrc: function(response) {
+                    return response.success ? response.data : [];
+                }
+            },
+            columns: [
+                { data: 'id', name: 'id' },
                     
                     // Add date range filters if present
                     const startDate = $('#date-filter-start').val();
