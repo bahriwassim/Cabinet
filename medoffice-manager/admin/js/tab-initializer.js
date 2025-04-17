@@ -50,20 +50,55 @@
         }
     }
 
-    // Initialisation de tous les DataTables présents sur la page
+    // Initialisation forcée des tables DataTables lors du changement d'onglet
     function initDataTables() {
         if ($.fn.DataTable) {
-            // Si DataTables est chargé, vérifier si les tables sont déjà initialisées
             try {
-                // N'initialiser les tableaux que s'ils ne sont pas déjà initialisés
-                // par patients.js ou consultations.js
+                console.log('Initialisation forcée des DataTables lors du changement d\'onglet');
                 
-                // Autres tables DataTable génériques si nécessaires (différentes de patients-table ou consultations-table)
-                // Elles seraient initialisées ici...
+                // Initialisation forcée pour patients si on est sur cette page
+                if ($('.medoffice-patients').length && typeof initPatients === 'function') {
+                    console.log('Réinitialisation de la page patients détectée');
+                    // Essayer de détruire la table existante
+                    if (window.patientsTable) {
+                        try {
+                            window.patientsTable.destroy();
+                            console.log('Table patients existante détruite avec succès');
+                        } catch (err) {
+                            console.log('Aucune table patients à détruire ou erreur:', err);
+                        }
+                    }
+                    
+                    // Rappeler l'initialisation
+                    setTimeout(function() {
+                        initPatients();
+                        console.log('Table patients réinitialisée avec succès');
+                    }, 100);
+                }
                 
-                console.log('Vérification des DataTables effectuée');
+                // Initialisation forcée pour consultations si on est sur cette page
+                if ($('.medoffice-consultations').length && typeof initConsultations === 'function') {
+                    console.log('Réinitialisation de la page consultations détectée');
+                    // Essayer de détruire la table existante
+                    if (window.consultationsTable) {
+                        try {
+                            window.consultationsTable.destroy();
+                            console.log('Table consultations existante détruite avec succès');
+                        } catch (err) {
+                            console.log('Aucune table consultations à détruire ou erreur:', err);
+                        }
+                    }
+                    
+                    // Rappeler l'initialisation
+                    setTimeout(function() {
+                        initConsultations();
+                        console.log('Table consultations réinitialisée avec succès');
+                    }, 100);
+                }
+                
+                console.log('Vérification et réinitialisation des DataTables terminée');
             } catch (e) {
-                console.error('Erreur lors de la vérification des DataTables:', e);
+                console.error('Erreur lors de la réinitialisation des DataTables:', e);
             }
         } else {
             console.warn('DataTables n\'est pas chargé. Les tableaux ne seront pas interactifs.');
@@ -118,12 +153,48 @@
         }
     }
 
+    // Ajout d'écouteurs d'événements pour les changements d'onglets
+    function setupTabListeners() {
+        console.log('Configuration des écouteurs d\'événements pour les onglets');
+        
+        // Pour les liens d'onglets dans la navigation principale
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            console.log('Changement d\'onglet détecté:', e.target.getAttribute('href'));
+            // Réinitialiser les composants après un changement d'onglet
+            setTimeout(function() {
+                initDataTables();
+                initFullCalendar();
+                activateBootstrapComponents();
+            }, 200);
+        });
+        
+        // Pour les links de la barre latérale qui chargent les différentes pages
+        $('#medoffice-menu a, .medoffice-menu-item').on('click', function() {
+            console.log('Clic sur item du menu détecté');
+            // Besoin d'un délai car le contenu sera chargé après le clic
+            setTimeout(function() {
+                initDataTables();
+                initFullCalendar();
+                activateBootstrapComponents();
+            }, 500);
+        });
+        
+        console.log('Écouteurs d\'événements pour les onglets configurés');
+    }
+    
     // Exécuter au chargement du document
     $(document).ready(function() {
         console.log('Initialisation des composants...');
         activateBootstrapComponents();
         initDataTables();
         initFullCalendar();
+        setupTabListeners();
+        
+        // Force une réinitialisation après 1 seconde pour s'assurer que tout est chargé
+        setTimeout(function() {
+            console.log('Réinitialisation forcée après délai');
+            initDataTables();
+        }, 1000);
     });
 
 })(jQuery);

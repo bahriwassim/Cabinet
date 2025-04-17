@@ -8,23 +8,49 @@
 (function($) {
     'use strict';
 
-    // Définir patientsTable au niveau global (window) pour éviter les problèmes de portée
-    window.patientsTable = window.patientsTable || null;
+    // Définir les variables globales pour tout le plugin
     let currentPatientId = 0;
     let currentView = 'list'; // 'list' or 'grid'
+    
+    // Supprimer toute référence à window.patientsTable pour éviter des conflits
+    if (window.patientsTable) {
+        try {
+            window.patientsTable.destroy();
+        } catch (e) {
+            console.log('Table déjà détruite ou non initialisée');
+        }
+        window.patientsTable = null;
+    }
 
     /**
      * Initialize the patients page
      */
     function initPatients() {
+        console.log('Initialisation de la page patients...');
+        
         // Only initialize if we're on the patients page
         if (!$('.medoffice-patients').length) {
+            console.log('Non sur la page patients, sortie');
             return;
         }
+        
+        console.log('Sur la page patients, initialisation des composants');
 
-        // Initialize DataTable for patients only if not already initialized
-        if ($.fn.DataTable && !$.fn.dataTable.isDataTable('#patients-table')) {
-            window.patientsTable = $('#patients-table').DataTable({
+        // Vérifier si la table existe dans le DOM
+        if (!$('#patients-table').length) {
+            console.error('Erreur: Table #patients-table non trouvée dans le DOM');
+            return;
+        }
+        
+        // Détruire DataTable existante si elle existe
+        if ($.fn.DataTable.isDataTable('#patients-table')) {
+            $('#patients-table').DataTable().destroy();
+            console.log('Table patients détruite pour réinitialisation');
+        }
+
+        // Initialiser une nouvelle table
+        console.log('Création nouvelle instance DataTable pour patients');
+        window.patientsTable = $('#patients-table').DataTable({
             ajax: {
                 url: medoffice_ajax.ajax_url,
                 type: 'POST',
@@ -648,5 +674,8 @@
     $(document).ready(function() {
         initPatients();
     });
+    
+    // Rendre la fonction initPatients accessible globalement
+    window.initPatients = initPatients;
 
 })(jQuery);

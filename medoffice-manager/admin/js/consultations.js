@@ -8,28 +8,52 @@
 (function($) {
     'use strict';
 
-    // Définir consultationsTable au niveau global (window) pour éviter les problèmes de portée
-    // et s'assurer qu'elle est accessible dans tous les contextes
-    window.consultationsTable = window.consultationsTable || null;
+    // Définir les variables globales pour tout le plugin
     let currentConsultationId = 0;
     let currentFilter = 'all';
     let patientsList = [];
     let selectedPatientId = 0;
     let attachmentFiles = [];
+    
+    // Supprimer toute référence à consultationsTable pour éviter des conflits
+    if (window.consultationsTable) {
+        try {
+            window.consultationsTable.destroy();
+        } catch (e) {
+            console.log('Table consultations déjà détruite ou non initialisée');
+        }
+        window.consultationsTable = null;
+    }
 
     /**
      * Initialize the consultations page
      */
     function initConsultations() {
+        console.log('Initialisation de la page consultations...');
+        
         // Only initialize if we're on the consultations page
         if (!$('.medoffice-consultations').length) {
+            console.log('Non sur la page consultations, sortie');
             return;
         }
+        
+        console.log('Sur la page consultations, initialisation des composants');
 
-        // Initialize DataTable for consultations only if not already initialized
-        if ($.fn.DataTable && !$.fn.dataTable.isDataTable('#consultations-table')) {
-            // Utiliser directement la variable globale window.consultationsTable
-            window.consultationsTable = $('#consultations-table').DataTable({
+        // Vérifier si la table existe dans le DOM
+        if (!$('#consultations-table').length) {
+            console.error('Erreur: Table #consultations-table non trouvée dans le DOM');
+            return;
+        }
+        
+        // Détruire DataTable existante si elle existe
+        if ($.fn.DataTable.isDataTable('#consultations-table')) {
+            $('#consultations-table').DataTable().destroy();
+            console.log('Table consultations détruite pour réinitialisation');
+        }
+
+        // Initialiser une nouvelle table
+        console.log('Création nouvelle instance DataTable pour consultations');
+        window.consultationsTable = $('#consultations-table').DataTable({
             ajax: {
                 url: medoffice_ajax.ajax_url,
                 type: 'POST',
@@ -1441,5 +1465,8 @@
     $(document).ready(function() {
         initConsultations();
     });
+    
+    // Rendre la fonction initConsultations accessible globalement
+    window.initConsultations = initConsultations;
 
 })(jQuery);
