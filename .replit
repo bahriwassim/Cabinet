@@ -1,0 +1,11 @@
+[workflows]
+runButton = "Run WordPress"
+
+[[workflows.workflow]]
+name = "Run WordPress"
+author = 41625219
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "php -S 0.0.0.0:5000"

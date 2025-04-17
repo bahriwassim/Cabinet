@@ -285,6 +285,60 @@
         if (typeof window.initCalendar === 'function') {
             window.initCalendar();
         }
+
+        // Initialisation des DataTables
+        if ($('#patients-table').length) {
+            $('#patients-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: medoffice_ajax.ajax_url,
+                    type: 'POST',
+                    data: function(d) {
+                        d.action = 'medoffice_get_patients';
+                        d.nonce = medoffice_ajax.nonce;
+                    }
+                }
+            });
+        }
+
+        if ($('#consultations-table').length) {
+            $('#consultations-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: medoffice_ajax.ajax_url,
+                    type: 'POST',
+                    data: function(d) {
+                        d.action = 'medoffice_get_consultations';
+                        d.nonce = medoffice_ajax.nonce;
+                    }
+                }
+            });
+        }
+
+        // Autocomplete pour la recherche de patients
+        $('#patient_search').autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: medoffice_ajax.ajax_url,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        action: 'medoffice_get_patients',
+                        term: request.term,
+                        nonce: medoffice_ajax.nonce
+                    },
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+            },
+            minLength: 2,
+            select: function(event, ui) {
+                $('#patient_id').val(ui.item.id);
+            }
+        });
     });
 
 })(jQuery);

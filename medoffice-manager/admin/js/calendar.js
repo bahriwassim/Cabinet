@@ -515,6 +515,12 @@
      */
     $(document).ready(function() {
         initCalendar();
+        $('#date_debut').change(function() {
+            // Update end date
+            let startDate = new Date($(this).val());
+            let endDate = new Date(startDate.getTime() + 30*60000);
+            $('#date_fin').val(endDate.toISOString().slice(0,16));
+        });
     });
 
 })(jQuery);
