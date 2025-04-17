@@ -15,7 +15,12 @@
 .medoffice-consultations,
 .medoffice-calendar,
 .medoffice-settings {
-    padding: 20px 0;
+    padding: 20px;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box;
 }
 
 /* Cards */

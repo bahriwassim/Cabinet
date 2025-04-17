@@ -8,7 +8,9 @@
 (function($) {
     'use strict';
 
-    let consultationsTable;
+    // Définir consultationsTable au niveau global (window) pour éviter les problèmes de portée
+    // et s'assurer qu'elle est accessible dans tous les contextes
+    window.consultationsTable = window.consultationsTable || null;
     let currentConsultationId = 0;
     let currentFilter = 'all';
     let patientsList = [];
@@ -26,7 +28,8 @@
 
         // Initialize DataTable for consultations only if not already initialized
         if ($.fn.DataTable && !$.fn.dataTable.isDataTable('#consultations-table')) {
-            consultationsTable = $('#consultations-table').DataTable({
+            // Utiliser directement la variable globale window.consultationsTable
+            window.consultationsTable = $('#consultations-table').DataTable({
             ajax: {
                 url: medoffice_ajax.ajax_url,
                 type: 'POST',
@@ -127,10 +130,11 @@
                 url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/fr-FR.json'
             }
         });
+        }
         
         // Initialize search
         $('#consultation-search').on('keyup', function() {
-            consultationsTable.search($(this).val()).draw();
+            window.consultationsTable.search($(this).val()).draw();
         });
 
         // Add new consultation button
@@ -162,14 +166,14 @@
             $('#date-filter-end').val('');
             
             // Reload the table with the new filter
-            consultationsTable.ajax.reload();
+            window.consultationsTable.ajax.reload();
         });
         
         // Handle date range filter
         $('#apply-date-filter').on('click', function() {
             // Set the filter to custom to avoid conflicts with predefined filters
             currentFilter = 'custom';
-            consultationsTable.ajax.reload();
+            window.consultationsTable.ajax.reload();
         });
         
         // Save consultation
@@ -1142,7 +1146,7 @@
             success: function(response) {
                 if (response.success) {
                     $('#paymentModal').modal('hide');
-                    consultationsTable.ajax.reload();
+                    window.consultationsTable.ajax.reload();
                     
                     alert('Paiement enregistré avec succès !');
                     
@@ -1220,7 +1224,7 @@
             success: function(response) {
                 if (response.success) {
                     $('#consultationModal').modal('hide');
-                    consultationsTable.ajax.reload();
+                    window.consultationsTable.ajax.reload();
                     
                     if ($('#consultation_id').val() === '0') {
                         alert('Consultation ajoutée avec succès !');
@@ -1262,7 +1266,7 @@
             success: function(response) {
                 if (response.success) {
                     $('#deleteConsultationModal').modal('hide');
-                    consultationsTable.ajax.reload();
+                    window.consultationsTable.ajax.reload();
                     alert('Consultation supprimée avec succès !');
                 } else {
                     alert('Erreur lors de la suppression : ' + (response.data ? response.data.message : 'Erreur inconnue'));

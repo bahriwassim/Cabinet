@@ -8,7 +8,8 @@
 (function($) {
     'use strict';
 
-    let patientsTable;
+    // Définir patientsTable au niveau global (window) pour éviter les problèmes de portée
+    window.patientsTable = window.patientsTable || null;
     let currentPatientId = 0;
     let currentView = 'list'; // 'list' or 'grid'
 
@@ -23,7 +24,7 @@
 
         // Initialize DataTable for patients only if not already initialized
         if ($.fn.DataTable && !$.fn.dataTable.isDataTable('#patients-table')) {
-            patientsTable = $('#patients-table').DataTable({
+            window.patientsTable = $('#patients-table').DataTable({
             ajax: {
                 url: medoffice_ajax.ajax_url,
                 type: 'POST',
@@ -106,7 +107,7 @@
         
         // Initialize search
         $('#patient-search').on('keyup', function() {
-            patientsTable.search($(this).val()).draw();
+            window.patientsTable.search($(this).val()).draw();
         });
 
         // Add new patient button
@@ -140,7 +141,7 @@
             e.preventDefault();
             const filter = $(this).data('filter');
             $('#patients-table').data('filter', filter);
-            patientsTable.ajax.reload();
+            window.patientsTable.ajax.reload();
         });
         
         // Handle patient actions (view, edit, delete)
@@ -576,7 +577,7 @@
             success: function(response) {
                 if (response.success) {
                     $('#patientModal').modal('hide');
-                    patientsTable.ajax.reload();
+                    window.patientsTable.ajax.reload();
                     
                     if (patientData.id === '0') {
                         alert('Patient ajouté avec succès !');
@@ -618,7 +619,7 @@
             success: function(response) {
                 if (response.success) {
                     $('#deletePatientModal').modal('hide');
-                    patientsTable.ajax.reload();
+                    window.patientsTable.ajax.reload();
                     alert('Patient supprimé avec succès !');
                 } else {
                     alert('Erreur lors de la suppression : ' + (response.data ? response.data.message : 'Erreur inconnue'));

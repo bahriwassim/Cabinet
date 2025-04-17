@@ -53,43 +53,17 @@
     // Initialisation de tous les DataTables présents sur la page
     function initDataTables() {
         if ($.fn.DataTable) {
-            // Si DataTables est chargé, initialiser toutes les tables
+            // Si DataTables est chargé, vérifier si les tables sont déjà initialisées
             try {
-                // Détruire les instances existantes de DataTable pour éviter l'erreur de réinitialisation
-                if ($.fn.dataTable.isDataTable('#patients-table')) {
-                    $('#patients-table').DataTable().destroy();
-                }
+                // N'initialiser les tableaux que s'ils ne sont pas déjà initialisés
+                // par patients.js ou consultations.js
                 
-                if ($.fn.dataTable.isDataTable('#consultations-table')) {
-                    $('#consultations-table').DataTable().destroy();
-                }
+                // Autres tables DataTable génériques si nécessaires (différentes de patients-table ou consultations-table)
+                // Elles seraient initialisées ici...
                 
-                // Initialiser les tableaux
-                if ($('#patients-table').length) {
-                    $('#patients-table').DataTable({
-                        language: {
-                            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/French.json'
-                        },
-                        responsive: true,
-                        destroy: true // Permet la réinitialisation
-                    });
-                    console.log('DataTable patients initialisé');
-                }
-                
-                if ($('#consultations-table').length) {
-                    $('#consultations-table').DataTable({
-                        language: {
-                            url: 'https://cdn.datatables.net/plug-ins/1.10.25/i18n/French.json'
-                        },
-                        responsive: true,
-                        destroy: true // Permet la réinitialisation
-                    });
-                    console.log('DataTable consultations initialisé');
-                }
-                
-                // Autres tables DataTable si nécessaire
+                console.log('Vérification des DataTables effectuée');
             } catch (e) {
-                console.error('Erreur lors de l\'initialisation des DataTables:', e);
+                console.error('Erreur lors de la vérification des DataTables:', e);
             }
         } else {
             console.warn('DataTables n\'est pas chargé. Les tableaux ne seront pas interactifs.');
