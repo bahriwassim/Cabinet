@@ -17,6 +17,26 @@
     
     <hr class="wp-header-end">
     
+    <div class="dashboard-nav mb-4">
+        <nav class="nav">
+            <a class="nav-link active" href="admin.php?page=medoffice-dashboard">
+                <i class="fas fa-tachometer-alt"></i> Tableau de bord
+            </a>
+            <a class="nav-link" href="admin.php?page=medoffice-patients">
+                <i class="fas fa-users"></i> Patients
+            </a>
+            <a class="nav-link" href="admin.php?page=medoffice-consultations">
+                <i class="fas fa-stethoscope"></i> Consultations
+            </a>
+            <a class="nav-link" href="admin.php?page=medoffice-calendar">
+                <i class="fas fa-calendar-alt"></i> Rendez-vous
+            </a>
+            <a class="nav-link" href="admin.php?page=medoffice-settings">
+                <i class="fas fa-cog"></i> Paramètres
+            </a>
+        </nav>
+    </div>
+    
     <div class="row stats-cards mt-4">
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">

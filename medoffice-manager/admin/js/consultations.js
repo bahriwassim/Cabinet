@@ -91,7 +91,7 @@
                 }
             },
             columns: [
-                { data: "ID" },
+                { data: "id" },
                 { 
                     data: "date_consultation",
                     render: function(data, type, row) {

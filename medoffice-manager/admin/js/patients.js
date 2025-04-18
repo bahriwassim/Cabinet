@@ -75,7 +75,7 @@
                 }
             },
             columns: [
-                { data: "ID" },
+                { data: "id" },
                 { 
                     data: null,
                     render: function(data, type, row) {
