@@ -286,20 +286,9 @@
             window.initCalendar();
         }
 
-        // Initialisation des DataTables
-        if ($('#patients-table').length) {
-            $('#patients-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: medoffice_ajax.ajax_url,
-                    type: 'POST',
-                    data: function(d) {
-                        d.action = 'medoffice_get_patients';
-                        d.nonce = medoffice_ajax.nonce;
-                    }
-                }
-            });
+        // Let module-specific JS handle DataTables initialization
+        if ($('#patients-table').length && typeof window.initPatients === 'function') {
+            window.initPatients();
         }
 
         if ($('#consultations-table').length) {
