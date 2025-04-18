@@ -371,6 +371,14 @@ table.dataTable {
     padding: 1rem;
 }
 
+#patients-table-container {
+    display: block;
+}
+
+.view-grid #patients-table-container {
+    display: none !important;
+}
+
 .view-grid #patient-grid-view {
     display: grid;
 }
