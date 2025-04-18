@@ -268,12 +268,12 @@
             viewConsultation(consultationId);
         });
 
-        $('#consultations-table').on('click', '.edit-consultation', function() {
+        $(document).on('click', '.edit-consultation', function() {
             const consultationId = $(this).data('id');
             editConsultation(consultationId);
         });
 
-        $('#consultations-table').on('click', '.delete-consultation', function() {
+        $(document).on('click', '.delete-consultation', function() {
             const consultationId = $(this).data('id');
             currentConsultationId = consultationId;
             $('#deleteConsultationModal').modal('show');
