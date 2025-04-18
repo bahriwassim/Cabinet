@@ -224,7 +224,9 @@
         $('#settings-form').on('submit', function(e) {
             e.preventDefault();
 
-            const formData = $(this).serialize();
+            const formData = new FormData(this);
+            formData.append('action', 'medoffice_save_settings');
+            formData.append('nonce', medoffice_ajax.nonce);
 
             $.ajax({
                 url: medoffice_ajax.ajax_url,

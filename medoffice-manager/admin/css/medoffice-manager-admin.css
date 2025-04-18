@@ -287,15 +287,15 @@
         flex-direction: column;
         align-items: flex-start;
     }
-    
+
     .calendar-toolbar > div {
         margin-bottom: 10px;
     }
-    
+
     .date-range-filter {
         width: 100%;
     }
-    
+
     .date-range-filter .form-control {
         font-size: 0.8rem;
     }
@@ -361,4 +361,20 @@ table.dataTable {
 
 .card-body {
     padding: 1.25rem;
+}
+
+/* Patient Grid View Fix */
+#patient-grid-view {
+    display: none;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.view-grid #patient-grid-view {
+    display: grid;
+}
+
+.view-grid #patients-table-container {
+    display: none;
 }

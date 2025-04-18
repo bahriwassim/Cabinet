@@ -521,6 +521,35 @@
             let endDate = new Date(startDate.getTime() + 30*60000);
             $('#date_fin').val(endDate.toISOString().slice(0,16));
         });
+        // Add patient search autocomplete
+        $('#patient_search').autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: medoffice_ajax.ajax_url,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        action: 'medoffice_search_patients',
+                        term: request.term,
+                        nonce: medoffice_ajax.nonce
+                    },
+                    success: function(data) {
+                        response($.map(data.data || [], function(item) {
+                            return {
+                                label: item.prenom + ' ' + item.nom,
+                                value: item.id
+                            };
+                        }));
+                    }
+                });
+            },
+            minLength: 2,
+            select: function(event, ui) {
+                $('#patient_id').val(ui.item.value);
+                $(this).val(ui.item.label);
+                return false;
+            }
+        });
     });
 
 })(jQuery);
